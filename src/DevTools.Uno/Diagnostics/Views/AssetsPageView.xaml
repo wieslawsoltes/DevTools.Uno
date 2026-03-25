@@ -1,0 +1,184 @@
+<UserControl
+    x:Class="DevTools.Uno.Diagnostics.Views.AssetsPageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:automation="using:Microsoft.UI.Xaml.Automation"
+    xmlns:controls="using:Avalonia.Controls"
+    xmlns:views="using:DevTools.Uno.Diagnostics.Views"
+    automation:AutomationProperties.Name="Assets inspection page">
+    <Grid x:Name="LayoutRoot"
+          MinHeight="0"
+          MinWidth="0"
+          ColumnSpacing="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="FolderColumn"
+                              Width="1.1*"
+                              MinWidth="280" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition x:Name="ContentColumn"
+                              Width="1.9*"
+                              MinWidth="520" />
+        </Grid.ColumnDefinitions>
+
+        <Grid MinHeight="0"
+              MinWidth="0"
+              Margin="0,0,12,0"
+              RowSpacing="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Spacing="8">
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource DevToolsPageTitleTextStyle}"
+                               Text="Folders" />
+                    <TextBlock Style="{StaticResource DevToolsBodyTextStyle}"
+                               Text="{Binding StatusText}"
+                               TextWrapping="WrapWholeWords" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                    <Button Command="{Binding RefreshCommand}"
+                            Content="Refresh"
+                            automation:AutomationProperties.Name="Refresh assets" />
+                    <Button Command="{Binding ExpandAllCommand}"
+                            Content="Expand"
+                            automation:AutomationProperties.Name="Expand all asset folders" />
+                    <Button Command="{Binding CollapseAllCommand}"
+                            Content="Collapse"
+                            automation:AutomationProperties.Name="Collapse all asset folders" />
+                </StackPanel>
+            </StackPanel>
+
+            <Border Grid.Row="1"
+                    MinHeight="0"
+                    MinWidth="0"
+                    Style="{StaticResource DevToolsDataPanelBorderStyle}">
+                <controls:TreeDataGrid x:Name="FolderTree"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Source="{Binding FolderTreeSource}"
+                                       automation:AutomationProperties.Name="Asset folders" />
+            </Border>
+        </Grid>
+
+        <Border x:Name="PaneSplitter"
+                Grid.Column="1"
+                Width="8"
+                Background="Transparent"
+                automation:AutomationProperties.Name="Resize folders and assets panes" />
+
+        <Grid Grid.Column="2"
+              Margin="12,0,0,0"
+              MinHeight="0"
+              MinWidth="0"
+              RowSpacing="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition x:Name="AssetsRow"
+                               Height="*"
+                               MinHeight="220" />
+                <RowDefinition Height="8" />
+                <RowDefinition x:Name="PreviewRow"
+                               Height="*"
+                               MinHeight="180" />
+            </Grid.RowDefinitions>
+
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource DevToolsPageTitleTextStyle}"
+                               Text="{Binding SelectedFolderName}" />
+                    <TextBlock Style="{StaticResource DevToolsBodyTextStyle}"
+                               Text="{Binding SelectedFolderSummary}"
+                               TextWrapping="WrapWholeWords" />
+                </StackPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            VerticalAlignment="Center">
+                    <Button Command="{Binding CopySelectedUriCommand}"
+                            Content="Copy Uri"
+                            automation:AutomationProperties.Name="Copy selected asset uri" />
+                    <Button Command="{Binding CopySelectedPathCommand}"
+                            Content="Copy Path"
+                            automation:AutomationProperties.Name="Copy selected asset path" />
+                    <Button Command="{Binding ExportSelectedCommand}"
+                            Content="Export"
+                            automation:AutomationProperties.Name="Export selected asset" />
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox PlaceholderText="Filter assets by name, path, or type"
+                         Text="{Binding Filter.FilterString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         automation:AutomationProperties.Name="Filter assets" />
+                <ToggleButton Grid.Column="1"
+                              IsChecked="{Binding Recursive, Mode=TwoWay}"
+                              Content="Recursive"
+                              automation:AutomationProperties.Name="Toggle recursive asset listing" />
+                <ComboBox Grid.Column="2"
+                          Width="120"
+                          ItemsSource="{Binding SortOptions}"
+                          SelectedItem="{Binding SelectedSortOption, Mode=TwoWay}"
+                          automation:AutomationProperties.Name="Sort assets by" />
+                <ToggleButton Grid.Column="3"
+                              IsChecked="{Binding SortDescending, Mode=TwoWay}"
+                              Content="Descending"
+                              automation:AutomationProperties.Name="Toggle descending asset sort" />
+            </Grid>
+
+            <Grid Grid.Row="2"
+                  MinHeight="0"
+                  MinWidth="0"
+                  RowSpacing="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Foreground="{ThemeResource DevToolsForegroundCaptionBrush}"
+                           Text="{Binding AssetCountText}" />
+
+                <Border Grid.Row="1"
+                        MinHeight="0"
+                        MinWidth="0"
+                        Style="{StaticResource DevToolsDataPanelBorderStyle}">
+                    <controls:TreeDataGrid x:Name="AssetsGrid"
+                                           HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Stretch"
+                                           Source="{Binding AssetSource}"
+                                           automation:AutomationProperties.Name="Assets grid" />
+                </Border>
+            </Grid>
+
+            <Border x:Name="PreviewSplitter"
+                    Grid.Row="3"
+                    Height="8"
+                    Background="Transparent"
+                    automation:AutomationProperties.Name="Resize assets grid and preview panes" />
+
+            <Border Grid.Row="4"
+                    MinHeight="0"
+                    MinWidth="0"
+                    Style="{StaticResource DevToolsDataPanelBorderStyle}">
+                <views:AssetPreviewView x:Name="PreviewView"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        DataContext="{Binding Preview}" />
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

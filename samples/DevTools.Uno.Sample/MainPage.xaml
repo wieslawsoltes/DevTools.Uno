@@ -1,0 +1,172 @@
+<Page
+    x:Class="DevTools.Uno.Sample.MainPage"
+    x:Name="PageRoot"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:DevTools.Uno.Sample"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <Style x:Key="BindingShowcaseTileStyle"
+               TargetType="local:BindingShowcaseTile">
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="local:BindingShowcaseTile">
+                        <Border Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <StackPanel Spacing="6">
+                                <TextBlock x:Name="TitlePresenter"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           Text="{TemplateBinding Title}" />
+                                <TextBlock x:Name="DetailPresenter"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           Opacity="0.82"
+                                           Text="{TemplateBinding Body}"
+                                           TextWrapping="WrapWholeWords" />
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    <Grid x:Name="RootGrid"
+          Padding="24"
+          RowSpacing="16"
+          ColumnSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Padding="20"
+                CornerRadius="12"
+                Background="{ThemeResource AccentFillColorSecondaryBrush}">
+            <StackPanel Spacing="8">
+                <TextBlock FontSize="28"
+                           FontWeight="SemiBold"
+                           Text="DevTools.Uno sample host" />
+                <TextBlock Text="{x:Bind BindingInspectorHint, Mode=OneWay}"
+                           TextWrapping="WrapWholeWords" />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1"
+              ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Padding="16"
+                    CornerRadius="12"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                <StackPanel Spacing="12">
+                    <TextBox x:Name="SearchBox"
+                             Header="Search"
+                             PlaceholderText="Type to exercise TwoWay Binding"
+                             Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Slider x:Name="OpacitySlider"
+                            Header="Opacity"
+                            Minimum="0.2"
+                            Maximum="1"
+                            Value="{Binding ActionOpacity, Mode=TwoWay}" />
+                    <ToggleSwitch x:Name="FeatureSwitch"
+                                  Header="Feature toggle"
+                                  IsOn="{Binding IsFeatureEnabled, Mode=TwoWay}" />
+                    <ComboBox x:Name="CategoryPicker"
+                              Header="Category"
+                              ItemsSource="{Binding Categories}"
+                              SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
+                    <Button x:Name="ActionButton"
+                            HorizontalAlignment="Left"
+                            Content="{Binding ActionButtonText}"
+                            Opacity="{Binding ActionOpacity}">
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Primary action" />
+                                <MenuFlyoutItem Text="Secondary action" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+                    <ListView x:Name="ListHost"
+                              Height="240"
+                              ItemsSource="{Binding Results}"
+                              SelectedItem="{Binding SelectedResult, Mode=TwoWay}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="{Binding Title}" />
+                                    <TextBlock FontSize="12"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Text="{Binding Description}"
+                                               TextWrapping="WrapWholeWords" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Padding="16"
+                    CornerRadius="12"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                <StackPanel Spacing="12">
+                    <TextBlock FontSize="18"
+                               FontWeight="SemiBold"
+                               Text="Binding outputs" />
+                    <TextBlock x:Name="StatusText"
+                               Text="{Binding StatusText}"
+                               TextWrapping="WrapWholeWords" />
+                    <TextBlock x:Name="SearchSummaryText"
+                               Text="{Binding SearchSummary}"
+                               TextWrapping="WrapWholeWords" />
+                    <TextBlock x:Name="ElementNameMirrorText"
+                               Text="{Binding ElementName=SearchBox, Path=Text}"
+                               TextWrapping="WrapWholeWords" />
+                    <TextBlock x:Name="SliderValueMirrorText"
+                               Text="{Binding ElementName=OpacitySlider, Path=Value}"
+                               TextWrapping="WrapWholeWords" />
+                    <TextBlock x:Name="CompiledSummaryText"
+                               Text="{x:Bind ViewModel.CompiledBindingSummary, Mode=OneWay}"
+                               TextWrapping="WrapWholeWords" />
+                    <TextBlock x:Name="CompiledSelectionText"
+                               Text="{x:Bind FormatSelectedResult(ViewModel.SelectedResult), Mode=OneWay}"
+                               TextWrapping="WrapWholeWords" />
+                    <ProgressBar x:Name="CompiledProgressBar"
+                                 Minimum="0"
+                                 Maximum="100"
+                                 Value="{x:Bind ViewModel.ProgressValue, Mode=OneWay}" />
+                    <local:BindingShowcaseTile x:Name="TemplateBindingTile"
+                                               Style="{StaticResource BindingShowcaseTileStyle}"
+                                               Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                               BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                                               Title="{Binding TileTitle}"
+                                               Body="{Binding TileBody}" />
+                    <Rectangle Height="96"
+                               RadiusX="12"
+                               RadiusY="12"
+                               Fill="{ThemeResource SystemFillColorCautionBrush}" />
+                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Text="Inspect SearchBox for Binding, ElementNameMirrorText for ElementName, CompiledSummaryText or CompiledProgressBar for x:Bind, ListHost for ItemsSource/SelectedItem, and TitlePresenter/DetailPresenter inside TemplateBindingTile for TemplateBinding."
+                               TextWrapping="WrapWholeWords" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

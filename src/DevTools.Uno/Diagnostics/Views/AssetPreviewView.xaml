@@ -1,0 +1,104 @@
+<UserControl
+    x:Class="DevTools.Uno.Diagnostics.Views.AssetPreviewView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:automation="using:Microsoft.UI.Xaml.Automation"
+    automation:AutomationProperties.Name="Asset preview">
+    <Grid x:Name="LayoutRoot"
+          MinHeight="0"
+          MinWidth="0"
+          Padding="{ThemeResource DevToolsPagePadding}"
+          RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Spacing="4">
+            <TextBlock Style="{StaticResource DevToolsPageTitleTextStyle}"
+                       Text="{Binding Title}" />
+            <TextBlock Style="{StaticResource DevToolsBodyTextStyle}"
+                       Text="{Binding AssetUri}"
+                       TextWrapping="WrapWholeWords" />
+            <TextBlock Style="{StaticResource DevToolsMetaTextStyle}"
+                       Text="{Binding Metadata}"
+                       TextWrapping="WrapWholeWords" />
+            <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}"
+                       Text="{Binding ExportStatus}"
+                       TextWrapping="WrapWholeWords" />
+        </StackPanel>
+
+        <Grid Grid.Row="1"
+              MinHeight="0"
+              MinWidth="0">
+            <Grid MinHeight="0"
+                  MinWidth="0">
+                <ScrollViewer x:Name="PreviewScroll"
+                          MinHeight="0"
+                          MinWidth="0"
+                          Visibility="{Binding TextVisibility}"
+                          automation:AutomationProperties.Name="Asset preview surface">
+                    <Grid MinHeight="0"
+                          MinWidth="0">
+                        <TextBox IsReadOnly="True"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 FontFamily="Consolas"
+                                 Text="{Binding PreviewText}" />
+                    </Grid>
+                </ScrollViewer>
+
+                <ScrollViewer x:Name="FontPreviewScroll"
+                          MinHeight="0"
+                          MinWidth="0"
+                          Visibility="{Binding FontVisibility}"
+                          automation:AutomationProperties.Name="Asset font preview surface">
+                    <Grid MinHeight="0"
+                          MinWidth="0">
+                        <Border Padding="24"
+                                Background="{ThemeResource DevToolsSectionSurfaceBrush}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Foreground="{ThemeResource DevToolsForegroundCaptionBrush}"
+                                           Text="Font preview" />
+                                <TextBlock FontSize="28"
+                                           TextWrapping="WrapWholeWords"
+                                           Foreground="{ThemeResource DevToolsForegroundBrush}"
+                                           FontFamily="{Binding PreviewFontFamily}"
+                                           Text="{Binding FontPreviewText}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+
+                <ScrollViewer x:Name="FallbackPreviewScroll"
+                          MinHeight="0"
+                          MinWidth="0"
+                          Visibility="{Binding FallbackVisibility}"
+                          automation:AutomationProperties.Name="Asset preview surface">
+                    <Grid MinHeight="0"
+                          MinWidth="0">
+                        <Border Padding="24"
+                                Background="{ThemeResource DevToolsSectionSurfaceBrush}">
+                            <TextBlock Foreground="{ThemeResource DevToolsForegroundMutedBrush}"
+                                       TextWrapping="WrapWholeWords"
+                                       Text="{Binding StatusText}" />
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+
+                <Border x:Name="ImagePreviewHost"
+                        Padding="{ThemeResource DevToolsPanelPadding}"
+                        Background="{ThemeResource DevToolsSectionSurfaceBrush}"
+                        MinHeight="0"
+                        MinWidth="0"
+                        Visibility="{Binding ImageVisibility}">
+                    <Image x:Name="PreviewImage"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           Stretch="Uniform"
+                           Source="{Binding PreviewImageSource}" />
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

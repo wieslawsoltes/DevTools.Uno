@@ -1,0 +1,7 @@
+DevTools.Uno asset sample
+
+This file is included so the Assets diagnostics tab has a text asset to inspect in the desktop sample.
+
+It should appear under:
+
+Assets/Diagnostics/devtools_assets_sample.txt

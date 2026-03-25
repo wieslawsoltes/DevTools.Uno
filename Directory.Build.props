@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UnoVersion>6.5.153</UnoVersion>
+  </PropertyGroup>
+</Project>

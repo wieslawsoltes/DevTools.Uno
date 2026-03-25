@@ -1,0 +1,18 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="DevToolsBackdropBrush" Color="{ThemeResource DevToolsBackdropColor}" />
+    <SolidColorBrush x:Key="DevToolsShellSurfaceBrush" Color="{ThemeResource DevToolsShellSurfaceColor}" />
+    <SolidColorBrush x:Key="DevToolsPanelSurfaceBrush" Color="{ThemeResource DevToolsPanelSurfaceColor}" />
+    <SolidColorBrush x:Key="DevToolsSectionSurfaceBrush" Color="{ThemeResource DevToolsSectionSurfaceColor}" />
+    <SolidColorBrush x:Key="DevToolsFooterSurfaceBrush" Color="{ThemeResource DevToolsFooterSurfaceColor}" />
+    <SolidColorBrush x:Key="DevToolsSurfaceBrush" Color="{ThemeResource DevToolsSurfaceColor}" />
+    <SolidColorBrush x:Key="DevToolsSurfaceSubtleBrush" Color="{ThemeResource DevToolsSurfaceSubtleColor}" />
+    <SolidColorBrush x:Key="DevToolsSurfaceMutedBrush" Color="{ThemeResource DevToolsSurfaceMutedColor}" />
+    <SolidColorBrush x:Key="DevToolsBorderBrush" Color="{ThemeResource DevToolsBorderColor}" />
+    <SolidColorBrush x:Key="DevToolsForegroundBrush" Color="{ThemeResource DevToolsForegroundColor}" />
+    <SolidColorBrush x:Key="DevToolsForegroundMutedBrush" Color="{ThemeResource DevToolsForegroundMutedColor}" />
+    <SolidColorBrush x:Key="DevToolsForegroundSubtleBrush" Color="{ThemeResource DevToolsForegroundSubtleColor}" />
+    <SolidColorBrush x:Key="DevToolsForegroundCaptionBrush" Color="{ThemeResource DevToolsForegroundCaptionColor}" />
+</ResourceDictionary>
