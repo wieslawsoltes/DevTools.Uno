@@ -12,6 +12,7 @@ namespace DevTools.Uno.Diagnostics.Views;
 public sealed partial class TreePageView : UserControl
 {
     private readonly DeferredLayoutRefresh _layoutRefresh;
+    private readonly TreeDataGridSelectionBringIntoViewController _selectionBringIntoView;
     private readonly PointerEventHandler _treePointerMovedHandler;
     private readonly PointerEventHandler _treePointerExitedHandler;
     private bool _treeHandlersAttached;
@@ -22,6 +23,10 @@ public sealed partial class TreePageView : UserControl
     {
         InitializeComponent();
         _layoutRefresh = new DeferredLayoutRefresh(this, 6, TreeGrid, DetailsView);
+        _selectionBringIntoView = new TreeDataGridSelectionBringIntoViewController(
+            this,
+            TreeGrid,
+            dataContext => (dataContext as ViewModels.TreePageViewModel)?.Selection);
         _treePointerMovedHandler = OnTreePointerMoved;
         _treePointerExitedHandler = OnTreePointerExited;
         SplitterChrome.ApplyHorizontal(PaneSplitter);
@@ -32,6 +37,7 @@ public sealed partial class TreePageView : UserControl
     internal void RequestLayoutRecovery()
     {
         _layoutRefresh.Request();
+        _selectionBringIntoView.RequestBringIntoView();
     }
 
     private void OnSplitterPointerPressed(object sender, PointerRoutedEventArgs e)
