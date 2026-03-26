@@ -19,7 +19,7 @@ internal sealed class ControlDetailsViewModel : ViewModelBase
         Element = element;
         _pinnedProperties = pinnedProperties;
         _includeClrProperties = includeClrProperties;
-        Layout = new ControlLayoutViewModel();
+        Layout = new ControlLayoutViewModel(Refresh);
         Metadata = new ControlMetadataViewModel();
         Filter = new FilterViewModel();
         Filter.RefreshFilter += (_, _) => Refresh();
