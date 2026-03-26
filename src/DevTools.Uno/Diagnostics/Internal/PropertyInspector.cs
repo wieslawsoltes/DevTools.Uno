@@ -6,7 +6,9 @@ using DevTools.Uno.Diagnostics.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.UI;
 
 namespace DevTools.Uno.Diagnostics.Internal;
 
@@ -221,15 +223,17 @@ internal static class PropertyInspector
                 IsGroup = false,
                 IsEditable = property.CanWrite,
                 FullName = $"CLR:{property.DeclaringType?.FullName}.{property.Name}",
+                Editor = GetEditorMetadata(property.PropertyType, SafeRead(() => property.GetValue(element)), property.CanWrite),
                 TrySetValue = value =>
                 {
-                    if (!TrySetClrValue(element, property, value))
+                    var result = TrySetClrValue(element, property, value);
+                    if (!result.Success)
                     {
-                        return false;
+                        return result;
                     }
 
                     node!.ValueText = FormatValue(SafeRead(() => property.GetValue(element)));
-                    return true;
+                    return result;
                 },
                 GetSources = () =>
                 [
@@ -266,16 +270,18 @@ internal static class PropertyInspector
             IsAttachedProperty = isAttached,
             IsEditable = true,
             FullName = $"DP:{ownerType.FullName}.{name}",
+            Editor = GetEditorMetadata(propertyType, SafeRead(() => element.GetValue(property)), isEditable: true),
             TrySetValue = value =>
             {
-                if (!TrySetDependencyValue(element, property, propertyType, value))
+                var result = TrySetDependencyValue(element, property, propertyType, value);
+                if (!result.Success)
                 {
-                    return false;
+                    return result;
                 }
 
                 node!.ValueText = FormatValue(SafeRead(() => element.GetValue(property)));
                 node.PriorityText = GetCurrentPrecedence(element, property);
-                return true;
+                return result;
             },
             GetSources = () => GetDependencySources(element, property, propertyType),
             GetRawValue = () => SafeRead(() => element.GetValue(property)),
@@ -606,35 +612,179 @@ internal static class PropertyInspector
         return string.Join(" | ", details);
     }
 
-    private static bool TrySetDependencyValue(DependencyObject element, DependencyProperty property, Type propertyType, string? value)
+    internal static PropertyEditorMetadata GetEditorMetadata(Type targetType, object? currentValue, bool isEditable)
     {
+        if (!isEditable)
+        {
+            return PropertyEditorMetadata.ReadOnly;
+        }
+
+        var nullableType = Nullable.GetUnderlyingType(targetType);
+        var actualType = nullableType ?? targetType;
+        var supportsNullValue = nullableType is not null || !targetType.IsValueType;
+
+        if (actualType == typeof(bool))
+        {
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.Boolean,
+                PlaceholderText = supportsNullValue ? "(null)" : string.Empty,
+                SupportsNullValue = supportsNullValue,
+                SupportsThreeState = supportsNullValue,
+            };
+        }
+
+        if (actualType.IsEnum)
+        {
+            var options = Enum
+                .GetValues(actualType)
+                .Cast<object>()
+                .Select(x => new PropertyEditorOption
+                {
+                    DisplayText = x.ToString() ?? actualType.Name,
+                    Value = x,
+                })
+                .ToList();
+
+            if (supportsNullValue)
+            {
+                options.Insert(0, new PropertyEditorOption
+                {
+                    DisplayText = "(null)",
+                    Value = null,
+                    IsNullOption = true,
+                });
+            }
+
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.Enum,
+                PlaceholderText = supportsNullValue ? "(null)" : actualType.Name,
+                SupportsNullValue = supportsNullValue,
+                Options = options,
+            };
+        }
+
+        if (IsNumericType(actualType))
+        {
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.Numeric,
+                PlaceholderText = supportsNullValue ? "(null)" : actualType.Name,
+                SupportsNullValue = supportsNullValue,
+            };
+        }
+
+        if (actualType == typeof(Thickness))
+        {
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.Thickness,
+                PlaceholderText = "Left,Top,Right,Bottom",
+                SupportsNullValue = supportsNullValue,
+            };
+        }
+
+        if (actualType == typeof(CornerRadius))
+        {
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.CornerRadius,
+                PlaceholderText = "TopLeft,TopRight,BottomRight,BottomLeft",
+                SupportsNullValue = supportsNullValue,
+            };
+        }
+
+        if (actualType == typeof(GridLength))
+        {
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.GridLength,
+                PlaceholderText = "Auto | 120 | 1*",
+                SupportsNullValue = supportsNullValue,
+            };
+        }
+
+        if (actualType == typeof(Color))
+        {
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.Color,
+                PlaceholderText = "#AARRGGBB",
+                SupportsNullValue = supportsNullValue,
+            };
+        }
+
+        if (typeof(Brush).IsAssignableFrom(actualType))
+        {
+            if (currentValue is not null &&
+                currentValue is not SolidColorBrush &&
+                actualType != typeof(SolidColorBrush))
+            {
+                return CanConvertFromString(targetType)
+                    ? new PropertyEditorMetadata
+                    {
+                        Kind = PropertyEditorKind.Text,
+                        PlaceholderText = currentValue.GetType().Name,
+                        SupportsNullValue = supportsNullValue,
+                    }
+                    : PropertyEditorMetadata.ReadOnly;
+            }
+
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.Brush,
+                PlaceholderText = currentValue is null ? "(null)" : currentValue.GetType().Name,
+                SupportsNullValue = supportsNullValue,
+            };
+        }
+
+        if (CanConvertFromString(targetType))
+        {
+            return new PropertyEditorMetadata
+            {
+                Kind = PropertyEditorKind.Text,
+                PlaceholderText = supportsNullValue ? "(null)" : actualType.Name,
+                SupportsNullValue = supportsNullValue,
+            };
+        }
+
+        return PropertyEditorMetadata.ReadOnly;
+    }
+
+    private static PropertyEditorCommitResult TrySetDependencyValue(DependencyObject element, DependencyProperty property, Type propertyType, object? value)
+    {
+        if (!TryConvertValue(propertyType, value, out var converted, out var error))
+        {
+            return PropertyEditorCommitResult.Failed(error);
+        }
+
         try
         {
-            var converted = ConvertFromString(propertyType, value);
             element.SetValue(property, converted);
-            return true;
+            return PropertyEditorCommitResult.Applied();
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            return PropertyEditorCommitResult.Failed(ex.GetBaseException().Message);
         }
     }
 
-    private static bool TrySetClrValue(object element, PropertyInfo property, string? value)
+    private static PropertyEditorCommitResult TrySetClrValue(object element, PropertyInfo property, object? value)
     {
-        if (!TryConvertFromString(property.PropertyType, value, out var converted))
+        if (!TryConvertValue(property.PropertyType, value, out var converted, out var error))
         {
-            return false;
+            return PropertyEditorCommitResult.Failed(error);
         }
 
         try
         {
             property.SetValue(element, converted);
-            return true;
+            return PropertyEditorCommitResult.Applied();
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            return PropertyEditorCommitResult.Failed(ex.GetBaseException().Message);
         }
     }
 
@@ -670,6 +820,22 @@ internal static class PropertyInspector
         }
     }
 
+    internal static bool TryConvertValue(Type targetType, object? value, out object? result, out string? errorMessage)
+    {
+        try
+        {
+            result = ConvertValue(targetType, value);
+            errorMessage = null;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            result = null;
+            errorMessage = ex.GetBaseException().Message;
+            return false;
+        }
+    }
+
     internal static object? ConvertFromString(Type targetType, string? value)
     {
         if (targetType == typeof(string))
@@ -699,7 +865,82 @@ internal static class PropertyInspector
         return Convert.ChangeType(value, actualType, CultureInfo.InvariantCulture);
     }
 
+    internal static object? ConvertValue(Type targetType, object? value)
+    {
+        if (value is string text)
+        {
+            return ConvertFromString(targetType, text);
+        }
+
+        if (value is null)
+        {
+            var nullableType = Nullable.GetUnderlyingType(targetType);
+            if (nullableType is not null || !targetType.IsValueType)
+            {
+                return null;
+            }
+
+            return GetDefaultValue(targetType);
+        }
+
+        var nullableTargetType = Nullable.GetUnderlyingType(targetType);
+        var actualType = nullableTargetType ?? targetType;
+
+        if (actualType.IsInstanceOfType(value))
+        {
+            return value;
+        }
+
+        if (typeof(Brush).IsAssignableFrom(actualType) && value is Color brushColor)
+        {
+            return new SolidColorBrush(brushColor);
+        }
+
+        if (actualType == typeof(Color) && value is SolidColorBrush solidBrush)
+        {
+            return solidBrush.Color;
+        }
+
+        if (actualType.IsEnum)
+        {
+            return value switch
+            {
+                string enumText => Enum.Parse(actualType, enumText, ignoreCase: true),
+                _ => Enum.ToObject(actualType, value),
+            };
+        }
+
+        var converter = TypeDescriptor.GetConverter(actualType);
+        if (converter.CanConvertFrom(value.GetType()))
+        {
+            return converter.ConvertFrom(null, CultureInfo.InvariantCulture, value);
+        }
+
+        if (value is IConvertible)
+        {
+            return Convert.ChangeType(value, actualType, CultureInfo.InvariantCulture);
+        }
+
+        return value;
+    }
+
     private static object? GetDefaultValue(Type type) => type.IsValueType ? Activator.CreateInstance(type) : null;
+
+    internal static bool IsNumericType(Type type)
+    {
+        var actualType = Nullable.GetUnderlyingType(type) ?? type;
+        return actualType == typeof(byte) ||
+               actualType == typeof(sbyte) ||
+               actualType == typeof(short) ||
+               actualType == typeof(ushort) ||
+               actualType == typeof(int) ||
+               actualType == typeof(uint) ||
+               actualType == typeof(long) ||
+               actualType == typeof(ulong) ||
+               actualType == typeof(float) ||
+               actualType == typeof(double) ||
+               actualType == typeof(decimal);
+    }
 
     internal static string FormatValue(object? value)
     {
