@@ -171,7 +171,7 @@ internal sealed class TreePageViewModel : ViewModelBase, IDisposable
         }
 
         _hoveredNode = null;
-        _mainView.ClearTreeHover();
+        _mainView.ClearTreeHover(this);
     }
 
     public bool ContainsElement(DependencyObject element)

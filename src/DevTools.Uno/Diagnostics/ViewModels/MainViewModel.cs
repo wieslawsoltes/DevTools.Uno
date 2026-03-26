@@ -31,6 +31,7 @@ internal sealed class MainViewModel : ViewModelBase, IDisposable
     private bool _showClrProperties = true;
     private int _knownPopupCount = -1;
     private bool _isSynchronizingTreeSelection;
+    private object? _hoverOwner;
 
     public MainViewModel(FrameworkElement root, OverlayService overlay, DevToolsOptions options, Action closeRequested)
     {
@@ -250,20 +251,45 @@ internal sealed class MainViewModel : ViewModelBase, IDisposable
     }
 
     public void UpdateTreeHover(TreePageViewModel source, DependencyObject? element)
+        => UpdateHover(source, element, source.IsVisualTree ? "Visual Tree" : "Logical Tree");
+
+    public void ClearTreeHover(TreePageViewModel source)
+        => ClearHover(source);
+
+    public void UpdateEventHover(object owner, DependencyObject? element, string title)
+        => UpdateHover(owner, element, title);
+
+    public void ClearEventHover(object owner)
+        => ClearHover(owner);
+
+    private void UpdateHover(object owner, DependencyObject? element, string title)
     {
         var resolved = ResolveInspectableElement(element);
-        TreeHoverElement = resolved is null
-            ? null
-            : $"{(source.IsVisualTree ? "Visual" : "Logical")} Tree: {FormatElementSummary(resolved)}";
-        _overlay.SetTreeHoverTarget(
-            resolved,
-            resolved is null
-                ? null
-                : $"{(source.IsVisualTree ? "Visual" : "Logical")} Tree: {InspectableNode.BuildSelector(resolved)}");
+        if (resolved is null)
+        {
+            if (ReferenceEquals(_hoverOwner, owner))
+            {
+                _hoverOwner = null;
+                TreeHoverElement = null;
+                _overlay.SetTreeHoverTarget(null, null);
+            }
+
+            return;
+        }
+
+        TreeHoverElement = $"{title}: {FormatElementSummary(resolved)}";
+        _overlay.SetTreeHoverTarget(resolved, title);
+        _hoverOwner = owner;
     }
 
-    public void ClearTreeHover()
+    private void ClearHover(object owner)
     {
+        if (!ReferenceEquals(_hoverOwner, owner))
+        {
+            return;
+        }
+
+        _hoverOwner = null;
         TreeHoverElement = null;
         _overlay.SetTreeHoverTarget(null, null);
     }

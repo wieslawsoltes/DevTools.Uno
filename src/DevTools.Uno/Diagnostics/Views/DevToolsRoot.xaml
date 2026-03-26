@@ -125,7 +125,7 @@
                     <TextBlock Foreground="{ThemeResource DevToolsForegroundBrush}" Text="{Binding FocusedControl}" />
                     <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}" Text="Pointer Over:" />
                     <TextBlock Foreground="{ThemeResource DevToolsForegroundBrush}" Text="{Binding PointerOverElement}" />
-                    <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}" Text="Tree Hover:" />
+                    <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}" Text="Hover:" />
                     <TextBlock MaxWidth="360"
                                Foreground="{ThemeResource DevToolsForegroundBrush}"
                                Text="{Binding TreeHoverElement}"
