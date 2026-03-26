@@ -1085,7 +1085,7 @@ internal static class StyleInspector
     private static Style? GetActiveStyle(FrameworkElement element)
         => SafeRead(() => FrameworkElementGetActiveStyleMethod?.Invoke(element, null) as Style);
 
-    private static DependencyObject? GetTemplatedParent(FrameworkElement element)
+    internal static DependencyObject? GetTemplatedParent(FrameworkElement element)
         => SafeRead(() => FrameworkElementGetTemplatedParentMethod?.Invoke(element, null) as DependencyObject);
 
     private static FrameworkElement? GetTemplateRoot(Control? control)

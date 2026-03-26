@@ -46,6 +46,14 @@ internal sealed class TreePageViewModel : ViewModelBase, IDisposable
                 await PropertyInspector.CopyTextAsync(SelectedNode.Selector);
             }
         }, () => SelectedNode is not null);
+        CopyTemplateSelectorCommand = new RelayCommand(async () =>
+        {
+            var selector = BuildTemplateSelector();
+            if (!string.IsNullOrWhiteSpace(selector))
+            {
+                await PropertyInspector.CopyTextAsync(selector);
+            }
+        }, () => SelectedNode is not null);
         ExpandRecursivelyCommand = new RelayCommand(ExpandRecursively, () => SelectedNode is not null);
         CollapseChildrenCommand = new RelayCommand(CollapseChildren, () => SelectedNode is not null);
         BringIntoViewCommand = new RelayCommand(BringIntoView, () => SelectedNode?.Element is FrameworkElement);
@@ -89,6 +97,8 @@ internal sealed class TreePageViewModel : ViewModelBase, IDisposable
 
     public RelayCommand CopySelectorCommand { get; }
 
+    public RelayCommand CopyTemplateSelectorCommand { get; }
+
     public RelayCommand ExpandRecursivelyCommand { get; }
 
     public RelayCommand CollapseChildrenCommand { get; }
@@ -112,13 +122,16 @@ internal sealed class TreePageViewModel : ViewModelBase, IDisposable
         {
             if (RaiseAndSetIfChanged(ref _selectedNode, value))
             {
-                Details = value is not null ? new ControlDetailsViewModel(value.Element, PinnedProperties, _mainView.ShowClrProperties) : null;
+                Details = value is not null
+                    ? new ControlDetailsViewModel(value.Element, PinnedProperties, _mainView.ShowClrProperties, value.DetailsTitle, value.DetailsType)
+                    : null;
                 if (!_suppressMainViewNotification)
                 {
                     _mainView.OnTreeSelectionChanged(this, value?.Element);
                 }
 
                 CopySelectorCommand.RaiseCanExecuteChanged();
+                CopyTemplateSelectorCommand.RaiseCanExecuteChanged();
                 ExpandRecursivelyCommand.RaiseCanExecuteChanged();
                 CollapseChildrenCommand.RaiseCanExecuteChanged();
                 BringIntoViewCommand.RaiseCanExecuteChanged();
@@ -371,6 +384,27 @@ internal sealed class TreePageViewModel : ViewModelBase, IDisposable
         {
             control.Focus(FocusState.Programmatic);
         }
+    }
+
+    private string? BuildTemplateSelector()
+    {
+        if (SelectedNode?.Element is null)
+        {
+            return null;
+        }
+
+        var parts = new List<string>();
+        var current = SelectedNode.Element;
+        while (current is not null)
+        {
+            parts.Add(InspectableNode.BuildSelectorPart(current));
+            current = current is FrameworkElement frameworkElement
+                ? StyleInspector.GetTemplatedParent(frameworkElement)
+                : null;
+        }
+
+        parts.Reverse();
+        return parts.Count == 0 ? null : string.Join(" /template/ ", parts);
     }
 
     private static void ExpandAncestors(InspectableNode? node)

@@ -56,6 +56,9 @@
                 <Button Command="{Binding CopySelectorCommand}"
                         Content="Copy Selector"
                         automation:AutomationProperties.Name="Copy selected element selector" />
+                <Button Command="{Binding CopyTemplateSelectorCommand}"
+                        Content="Copy Template Selector"
+                        automation:AutomationProperties.Name="Copy selected element selector through templated parent chain" />
                 <Button Command="{Binding ExpandRecursivelyCommand}"
                         Content="Expand"
                         automation:AutomationProperties.Name="Expand selected node recursively" />
