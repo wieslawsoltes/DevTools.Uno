@@ -201,6 +201,33 @@ internal sealed class EventsPageViewModel : ViewModelBase, IDisposable
         DisposeSubscriptions();
     }
 
+    public void UpdateHoveredSource(EventLogEntry? entry, object owner)
+    {
+        if (entry?.SourceElement is { } sourceElement)
+        {
+            _mainView.UpdateEventHover(owner, sourceElement, "Event Source");
+        }
+        else
+        {
+            _mainView.ClearEventHover(owner);
+        }
+    }
+
+    public void UpdateHoveredRouteElement(EventRouteEntryViewModel? entry, object owner)
+    {
+        if (entry?.Element is { } routeElement)
+        {
+            _mainView.UpdateEventHover(owner, routeElement, "Event Route");
+        }
+        else
+        {
+            _mainView.ClearEventHover(owner);
+        }
+    }
+
+    public void ClearHoveredOverlay(object owner)
+        => _mainView.ClearEventHover(owner);
+
     private void ToggleCapture()
     {
         IsCapturing = !IsCapturing;
