@@ -27,6 +27,10 @@ public sealed class DevToolsOptions
 
     public StorageFolder? ScreenshotFolder { get; set; }
 
+    public IScreenshotHandler? ScreenshotHandler { get; set; }
+
+    public DevToolsHotKeyConfiguration HotKeys { get; init; } = new();
+
     public bool EnablePointerInspection { get; set; } = true;
 
     public bool EnableFocusTracking { get; set; } = true;
