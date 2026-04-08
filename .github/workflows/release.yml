@@ -53,13 +53,8 @@ jobs:
             dotnet nuget push "$package" \
               --api-key "$NUGET_API_KEY" \
               --source https://api.nuget.org/v3/index.json \
-              --skip-duplicate
-          done
-
-          for package in artifacts/packages/*.snupkg; do
-            dotnet nuget push "$package" \
-              --api-key "$NUGET_API_KEY" \
-              --source https://api.nuget.org/v3/index.json \
+              --symbol-source https://api.nuget.org/v3/index.json \
+              --symbol-api-key "$NUGET_API_KEY" \
               --skip-duplicate
           done
 
