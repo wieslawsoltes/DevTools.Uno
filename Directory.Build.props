@@ -5,7 +5,7 @@
     <LangVersion>12</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UnoVersion>6.5.153</UnoVersion>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>0.2.0</VersionPrefix>
     <Authors>Wieslaw Soltes</Authors>
     <Company>Wieslaw Soltes</Company>
     <RepositoryUrl>https://github.com/wieslawsoltes/DevTools.Uno</RepositoryUrl>
