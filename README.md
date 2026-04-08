@@ -7,6 +7,8 @@
 
 `DevTools.Uno` is an in-app diagnostics package for Uno Platform applications. It attaches directly to your application, window, or root `FrameworkElement` and gives you a dedicated diagnostics surface for inspecting the live UI tree, bindings, resources, styles, events, assets, and memory state without leaving the running app.
 
+<img width="3566" height="2042" alt="image" src="https://github.com/user-attachments/assets/c977b6cd-374c-4151-889e-3e48cd524fe3" />
+
 ## Features
 
 - Logical tree and visual tree inspection with shared property details.
