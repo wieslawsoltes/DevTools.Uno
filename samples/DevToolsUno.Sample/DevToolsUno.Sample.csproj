@@ -19,6 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Override Uno.WinUI.Runtime.Skia.X11's vulnerable transitive D-Bus dependency. -->
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
     <ProjectReference Include="../../src/DevToolsUno/DevToolsUno.csproj" />
   </ItemGroup>
 </Project>
