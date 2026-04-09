@@ -1,11 +1,11 @@
-# DevTools.Uno
+# DevToolsUno
 
-[![NuGet](https://img.shields.io/nuget/v/DevTools.Uno?logo=nuget)](https://www.nuget.org/packages/DevTools.Uno/)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/DevTools.Uno?logo=nuget)](https://www.nuget.org/packages/DevTools.Uno/)
-[![CI](https://github.com/wieslawsoltes/DevTools.Uno/actions/workflows/ci.yml/badge.svg)](https://github.com/wieslawsoltes/DevTools.Uno/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/wieslawsoltes/DevTools.Uno?display_name=tag&logo=github)](https://github.com/wieslawsoltes/DevTools.Uno/releases)
+[![NuGet](https://img.shields.io/nuget/v/DevToolsUno?logo=nuget)](https://www.nuget.org/packages/DevToolsUno/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/DevToolsUno?logo=nuget)](https://www.nuget.org/packages/DevToolsUno/)
+[![CI](https://github.com/wieslawsoltes/DevToolsUno/actions/workflows/ci.yml/badge.svg)](https://github.com/wieslawsoltes/DevToolsUno/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/wieslawsoltes/DevToolsUno?display_name=tag&logo=github)](https://github.com/wieslawsoltes/DevToolsUno/releases)
 
-`DevTools.Uno` is an in-app diagnostics package for Uno Platform applications. It attaches directly to your application, window, or root `FrameworkElement` and gives you a dedicated diagnostics surface for inspecting the live UI tree, bindings, resources, styles, events, assets, and memory state without leaving the running app.
+`DevToolsUno` is an in-app diagnostics package for Uno Platform applications. It attaches directly to your application, window, or root `FrameworkElement` and gives you a dedicated diagnostics surface for inspecting the live UI tree, bindings, resources, styles, events, assets, and memory state without leaving the running app.
 
 <img width="3566" height="2042" alt="image" src="https://github.com/user-attachments/assets/c977b6cd-374c-4151-889e-3e48cd524fe3" />
 
@@ -26,7 +26,7 @@
 Install from NuGet:
 
 ```bash
-dotnet add package DevTools.Uno
+dotnet add package DevToolsUno
 ```
 
 The package targets `net9.0` and is intended for Uno Platform applications built on `Uno.WinUI` 6.5.x.
@@ -36,8 +36,8 @@ The package targets `net9.0` and is intended for Uno Platform applications built
 Attach DevTools from your app startup and keep the returned `IDisposable` for cleanup:
 
 ```csharp
-using DevTools.Uno;
-using DevTools.Uno.Diagnostics;
+using DevToolsUno;
+using DevToolsUno.Diagnostics;
 using Microsoft.UI.Xaml;
 
 namespace MyApp;
@@ -80,8 +80,8 @@ You can also attach DevTools to:
 `DevToolsOptions` lets you tune how the diagnostics UI is launched and how it behaves:
 
 ```csharp
-using DevTools.Uno.Diagnostics;
-using DevTools.Uno.Diagnostics.Screenshots;
+using DevToolsUno.Diagnostics;
+using DevToolsUno.Diagnostics.Screenshots;
 using Windows.System;
 
 var options = new DevToolsOptions
@@ -139,7 +139,7 @@ The diagnostics shell exposes the following primary views:
 
 ## Sample
 
-A runnable sample host is included at [samples/DevTools.Uno.Sample](https://github.com/wieslawsoltes/DevTools.Uno/tree/main/samples/DevTools.Uno.Sample). It demonstrates:
+A runnable sample host is included at [samples/DevToolsUno.Sample](https://github.com/wieslawsoltes/DevToolsUno/tree/main/samples/DevToolsUno.Sample). It demonstrates:
 
 - Window-level attachment.
 - Opening directly to the visual tree.
@@ -151,20 +151,20 @@ A runnable sample host is included at [samples/DevTools.Uno.Sample](https://gith
 This repository uses a Git submodule for the Uno TreeDataGrid port. Clone with submodules or initialize them after cloning:
 
 ```bash
-git clone --recurse-submodules https://github.com/wieslawsoltes/DevTools.Uno.git
-cd DevTools.Uno
+git clone --recurse-submodules https://github.com/wieslawsoltes/DevToolsUno.git
+cd DevToolsUno
 git submodule update --init --recursive
 ```
 
 Build locally:
 
 ```bash
-dotnet restore DevTools.Uno.sln
-dotnet build DevTools.Uno.sln -c Release
-dotnet pack src/DevTools.Uno/DevTools.Uno.csproj -c Release -o artifacts/packages
+dotnet restore DevToolsUno.sln
+dotnet build DevToolsUno.sln -c Release
+dotnet pack src/DevToolsUno/DevToolsUno.csproj -c Release -o artifacts/packages
 ```
 
-The sample project is intentionally marked as non-packable. Only `DevTools.Uno` is produced as a NuGet package.
+The sample project is intentionally marked as non-packable. Only `DevToolsUno` is produced as a NuGet package.
 
 ## CI And Release
 
@@ -181,4 +181,4 @@ To publish a package:
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/wieslawsoltes/DevTools.Uno/blob/main/LICENSE).
+This project is licensed under the [MIT License](https://github.com/wieslawsoltes/DevToolsUno/blob/main/LICENSE).

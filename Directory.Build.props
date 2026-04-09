@@ -8,7 +8,7 @@
     <VersionPrefix>0.1.0</VersionPrefix>
     <Authors>Wieslaw Soltes</Authors>
     <Company>Wieslaw Soltes</Company>
-    <RepositoryUrl>https://github.com/wieslawsoltes/DevTools.Uno</RepositoryUrl>
+    <RepositoryUrl>https://github.com/wieslawsoltes/DevToolsUno</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

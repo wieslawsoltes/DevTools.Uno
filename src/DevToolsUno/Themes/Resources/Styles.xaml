@@ -1,0 +1,90 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:views="using:DevToolsUno.Diagnostics.Views">
+
+    <Style x:Key="DevToolsShellBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource DevToolsShellSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource DevToolsBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{ThemeResource DevToolsChromeCornerRadius}" />
+    </Style>
+
+    <Style x:Key="DevToolsDataPanelBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource DevToolsPanelSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource DevToolsBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{ThemeResource DevToolsPaneBorderThickness}" />
+        <Setter Property="CornerRadius" Value="{ThemeResource DevToolsPaneCornerRadius}" />
+    </Style>
+
+    <Style x:Key="DevToolsInspectorCardBorderStyle" TargetType="Border">
+        <Setter Property="Padding" Value="{ThemeResource DevToolsInspectorSectionPadding}" />
+        <Setter Property="Background" Value="{ThemeResource DevToolsSectionSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource DevToolsBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{ThemeResource DevToolsPaneBorderThickness}" />
+        <Setter Property="CornerRadius" Value="{ThemeResource DevToolsPaneCornerRadius}" />
+    </Style>
+
+    <Style x:Key="DevToolsPageTitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{ThemeResource DevToolsForegroundBrush}" />
+        <Setter Property="TextWrapping" Value="WrapWholeWords" />
+    </Style>
+
+    <Style x:Key="DevToolsShellTitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{ThemeResource DevToolsForegroundBrush}" />
+        <Setter Property="TextWrapping" Value="WrapWholeWords" />
+    </Style>
+
+    <Style x:Key="DevToolsSectionTitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{ThemeResource DevToolsForegroundBrush}" />
+        <Setter Property="TextWrapping" Value="WrapWholeWords" />
+    </Style>
+
+    <Style x:Key="DevToolsBodyTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{ThemeResource DevToolsForegroundMutedBrush}" />
+        <Setter Property="TextWrapping" Value="WrapWholeWords" />
+    </Style>
+
+    <Style x:Key="DevToolsMetaTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{ThemeResource DevToolsForegroundSubtleBrush}" />
+        <Setter Property="TextWrapping" Value="WrapWholeWords" />
+    </Style>
+
+    <Style x:Key="DevToolsCaptionTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{ThemeResource DevToolsForegroundCaptionBrush}" />
+        <Setter Property="TextWrapping" Value="WrapWholeWords" />
+    </Style>
+
+    <Style x:Key="DevToolsValidationMessageTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{ThemeResource DevToolsValidationErrorBrush}" />
+        <Setter Property="TextWrapping" Value="WrapWholeWords" />
+    </Style>
+
+    <Style x:Key="DevToolsFlatListViewStyle" TargetType="ListView">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <DataTemplate x:Key="PropertyValueCellTemplate">
+        <views:PropertyValueCellPresenter Property="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="PropertyValueEditorCellTemplate">
+        <views:PropertyValueEditorPresenter Property="{Binding}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="SelectedPropertyEditorTemplate">
+        <views:PropertyValueEditorPresenter Property="{Binding}"
+                                            ShowDetailsChrome="True"
+                                            ShowValidationMessage="True" />
+    </DataTemplate>
+</ResourceDictionary>

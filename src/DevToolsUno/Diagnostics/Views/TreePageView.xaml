@@ -1,0 +1,112 @@
+<UserControl
+    x:Class="DevToolsUno.Diagnostics.Views.TreePageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:automation="using:Microsoft.UI.Xaml.Automation"
+    xmlns:controls="using:Avalonia.Controls"
+    xmlns:views="using:DevToolsUno.Diagnostics.Views"
+    automation:AutomationProperties.Name="Tree inspection page">
+    <UserControl.Resources>
+        <DataTemplate x:Key="TreeElementCellTemplate">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="0">
+                <TextBlock Foreground="{ThemeResource DevToolsForegroundBrush}"
+                           Text="{Binding TypeName}" />
+                <TextBlock Foreground="{ThemeResource DevToolsForegroundCaptionBrush}"
+                           Text="{Binding NameSuffix}" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid x:Name="LayoutRoot"
+          MinHeight="0"
+          MinWidth="0"
+          ColumnSpacing="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="TreeColumn"
+                              Width="2*"
+                              MinWidth="360" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition x:Name="DetailsColumn"
+                              Width="*"
+                              MinWidth="320" />
+        </Grid.ColumnDefinitions>
+        <Grid MinHeight="0"
+              MinWidth="0"
+              Margin="0,0,12,0"
+              RowSpacing="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Spacing="4">
+                <TextBlock Style="{StaticResource DevToolsPageTitleTextStyle}"
+                           Text="{Binding PageTitle}" />
+                <TextBlock Style="{StaticResource DevToolsBodyTextStyle}"
+                           Text="{Binding PageSummary}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1"
+                        Orientation="Horizontal"
+                        Spacing="8">
+                <Button Command="{Binding SelectRootCommand}"
+                        Content="Refresh Tree"
+                        automation:AutomationProperties.Name="Refresh tree" />
+                <Button Command="{Binding CopySelectorCommand}"
+                        Content="Copy Selector"
+                        automation:AutomationProperties.Name="Copy selected element selector" />
+                <Button Command="{Binding CopyTemplateSelectorCommand}"
+                        Content="Copy Template Selector"
+                        automation:AutomationProperties.Name="Copy selected element selector through templated parent chain" />
+                <Button Command="{Binding ExpandRecursivelyCommand}"
+                        Content="Expand"
+                        automation:AutomationProperties.Name="Expand selected node recursively" />
+                <Button Command="{Binding CollapseChildrenCommand}"
+                        Content="Collapse"
+                        automation:AutomationProperties.Name="Collapse selected node children" />
+                <Button Command="{Binding BringIntoViewCommand}"
+                        Content="Bring Into View"
+                        automation:AutomationProperties.Name="Bring selected element into view" />
+                <Button Command="{Binding FocusCommand}"
+                        Content="Focus"
+                        automation:AutomationProperties.Name="Focus selected element" />
+                <Button Command="{Binding ScreenshotCommand}"
+                        Content="Screenshot"
+                        automation:AutomationProperties.Name="Capture screenshot of selected element" />
+            </StackPanel>
+
+            <Border Grid.Row="2"
+                    MinHeight="0"
+                    MinWidth="0"
+                    Style="{StaticResource DevToolsDataPanelBorderStyle}">
+                <controls:TreeDataGrid x:Name="TreeGrid"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Source="{Binding TreeSource}"
+                                       automation:AutomationProperties.Name="Inspected tree" />
+            </Border>
+        </Grid>
+
+        <Border x:Name="PaneSplitter"
+                Grid.Column="1"
+                Width="8"
+                Background="Transparent"
+                PointerCaptureLost="OnSplitterPointerCaptureLost"
+                PointerMoved="OnSplitterPointerMoved"
+                PointerPressed="OnSplitterPointerPressed"
+                PointerReleased="OnSplitterPointerReleased"
+                automation:AutomationProperties.Name="Resize tree and properties panes" />
+
+        <Border Grid.Column="2"
+                Margin="12,0,0,0"
+                MinHeight="0"
+                MinWidth="0"
+                Style="{StaticResource DevToolsDataPanelBorderStyle}">
+            <views:ControlDetailsView x:Name="DetailsView"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
+                                      DataContext="{Binding Details}" />
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,147 @@
+<UserControl
+    x:Class="DevToolsUno.Diagnostics.Views.DevToolsRoot"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:automation="using:Microsoft.UI.Xaml.Automation"
+    xmlns:views="using:DevToolsUno.Diagnostics.Views"
+    Background="Transparent"
+    automation:AutomationProperties.Name="DevTools shell">
+    <Border Style="{StaticResource DevToolsShellBorderStyle}">
+        <Grid MinHeight="0"
+              MinWidth="0"
+              RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border Padding="{ThemeResource DevToolsChromeHeaderPadding}"
+                    Background="{ThemeResource DevToolsSectionSurfaceBrush}"
+                    BorderThickness="0,0,0,1"
+                    BorderBrush="{ThemeResource DevToolsBorderBrush}"
+                    CornerRadius="{ThemeResource DevToolsChromeHeaderCornerRadius}">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Spacing="12">
+                        <StackPanel Spacing="4">
+                            <TextBlock Style="{StaticResource DevToolsShellTitleTextStyle}"
+                                       Text="DevToolsUno" />
+                            <TextBlock Style="{StaticResource DevToolsBodyTextStyle}"
+                                       Text="Inspect trees, resources, assets, styles, bindings, events, and runtime state with one coherent tool window." />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center">
+                            <Button Command="{Binding RefreshCommand}"
+                                    Content="Refresh"
+                                    automation:AutomationProperties.Name="Refresh diagnostics data" />
+                            <ToggleButton IsChecked="{Binding ShowMarginPadding, Mode=TwoWay}"
+                                          Command="{Binding ToggleMarginPaddingCommand}"
+                                          Content="Margin/Padding"
+                                          automation:AutomationProperties.Name="Toggle margin and padding overlay" />
+                            <ToggleButton IsChecked="{Binding ShowFocusHighlighter, Mode=TwoWay}"
+                                          Command="{Binding ToggleFocusHighlightCommand}"
+                                          Content="Focus"
+                                          automation:AutomationProperties.Name="Toggle focus overlay" />
+                            <ToggleButton IsChecked="{Binding ShowFps, Mode=TwoWay}"
+                                          Command="{Binding ToggleFpsCommand}"
+                                          Content="FPS"
+                                          automation:AutomationProperties.Name="Toggle frames per second display" />
+                            <ToggleButton IsChecked="{Binding FreezePopups, Mode=TwoWay}"
+                                          Command="{Binding ToggleFreezePopupsCommand}"
+                                          Content="Freeze Popups"
+                                          automation:AutomationProperties.Name="Toggle popup freezing" />
+                            <ToggleButton IsChecked="{Binding ShowClrProperties, Mode=TwoWay}"
+                                          Command="{Binding ToggleClrPropertiesCommand}"
+                                          Content="CLR Properties"
+                                          automation:AutomationProperties.Name="Toggle CLR properties display" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Button Grid.Column="1"
+                            VerticalAlignment="Top"
+                            Command="{Binding CloseCommand}"
+                            Content="Close"
+                            automation:AutomationProperties.Name="Close DevTools" />
+                </Grid>
+            </Border>
+
+            <TabView x:Name="Tabs"
+                     Grid.Row="1"
+                     MinHeight="0"
+                     MinWidth="0"
+                     Background="Transparent"
+                     SelectedIndex="{Binding SelectedTab, Mode=TwoWay}"
+                     Padding="{ThemeResource DevToolsPagePadding}"
+                     SelectionChanged="OnTabSelectionChanged"
+                     automation:AutomationProperties.Name="DevTools pages">
+                <TabViewItem Header="Logical Tree">
+                    <views:TreePageView DataContext="{Binding LogicalTree}" />
+                </TabViewItem>
+                <TabViewItem Header="Visual Tree">
+                    <views:TreePageView DataContext="{Binding VisualTree}" />
+                </TabViewItem>
+                <TabViewItem Header="Events">
+                    <views:EventsPageView DataContext="{Binding Events}" />
+                </TabViewItem>
+                <TabViewItem Header="HotKeys">
+                    <views:HotKeyPageView DataContext="{Binding HotKeys}" />
+                </TabViewItem>
+                <TabViewItem Header="Resources">
+                    <views:ResourcesPageView DataContext="{Binding Resources}" />
+                </TabViewItem>
+                <TabViewItem Header="Assets">
+                    <views:AssetsPageView DataContext="{Binding Assets}" />
+                </TabViewItem>
+                <TabViewItem Header="Styles">
+                    <views:StylesPageView DataContext="{Binding Styles}" />
+                </TabViewItem>
+                <TabViewItem Header="Bindings">
+                    <views:BindingsPageView DataContext="{Binding Bindings}" />
+                </TabViewItem>
+                <TabViewItem Header="Memory">
+                    <views:MemoryPageView DataContext="{Binding Memory}" />
+                </TabViewItem>
+            </TabView>
+
+            <Border Grid.Row="2"
+                    Padding="{ThemeResource DevToolsChromeFooterPadding}"
+                    Background="{ThemeResource DevToolsFooterSurfaceBrush}"
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="{ThemeResource DevToolsBorderBrush}"
+                    CornerRadius="{ThemeResource DevToolsChromeFooterCornerRadius}">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="12"
+                            automation:AutomationProperties.Name="Diagnostics status">
+                    <TextBlock Style="{StaticResource DevToolsBodyTextStyle}"
+                               Text="{Binding InspectInstructionText}" />
+                    <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}" Text="Focused:" />
+                    <TextBlock Foreground="{ThemeResource DevToolsForegroundBrush}" Text="{Binding FocusedControl}" />
+                    <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}" Text="Pointer Over:" />
+                    <TextBlock Foreground="{ThemeResource DevToolsForegroundBrush}" Text="{Binding PointerOverElement}" />
+                    <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}" Text="Hover:" />
+                    <TextBlock MaxWidth="360"
+                               Foreground="{ThemeResource DevToolsForegroundBrush}"
+                               Text="{Binding TreeHoverElement}"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}" Text="Inspecting:" />
+                    <TextBlock MaxWidth="520"
+                               Foreground="{ThemeResource DevToolsForegroundBrush}"
+                               Text="{Binding InspectionTarget}"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Style="{StaticResource DevToolsCaptionTextStyle}" Text="Status:" />
+                    <TextBlock MaxWidth="520"
+                               Foreground="{ThemeResource DevToolsForegroundBrush}"
+                               Text="{Binding StatusText}"
+                               TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

@@ -43,10 +43,10 @@ jobs:
           echo "Building version: $VERSION (prerelease: $IS_PRERELEASE)"
 
       - name: Restore
-        run: dotnet restore src/DevTools.Uno/DevTools.Uno.csproj
+        run: dotnet restore src/DevToolsUno/DevToolsUno.csproj
 
       - name: Build
-        run: dotnet build src/DevTools.Uno/DevTools.Uno.csproj -c Release --no-restore -p:ContinuousIntegrationBuild=true
+        run: dotnet build src/DevToolsUno/DevToolsUno.csproj -c Release --no-restore -p:ContinuousIntegrationBuild=true
 
   pack:
     name: Pack Release
@@ -64,14 +64,14 @@ jobs:
           global-json-file: global.json
 
       - name: Restore
-        run: dotnet restore src/DevTools.Uno/DevTools.Uno.csproj
+        run: dotnet restore src/DevToolsUno/DevToolsUno.csproj
 
       - name: Build
-        run: dotnet build src/DevTools.Uno/DevTools.Uno.csproj -c Release --no-restore -p:ContinuousIntegrationBuild=true
+        run: dotnet build src/DevToolsUno/DevToolsUno.csproj -c Release --no-restore -p:ContinuousIntegrationBuild=true
 
       - name: Pack
         run: |
-          dotnet pack src/DevTools.Uno/DevTools.Uno.csproj \
+          dotnet pack src/DevToolsUno/DevToolsUno.csproj \
             -c Release \
             --no-build \
             -o artifacts/packages \
@@ -138,7 +138,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: DevTools.Uno v${{ needs.build.outputs.version }}
+          name: DevToolsUno v${{ needs.build.outputs.version }}
           tag_name: ${{ github.ref_name }}
           draft: false
           prerelease: ${{ needs.build.outputs.is-prerelease == 'true' }}
